@@ -1,0 +1,305 @@
+{
+  "common": {
+    "appName": "MedSlot",
+    "privacyPolicy": "Privacy policy"
+  },
+  "home": {
+    "title": "MedSlot",
+    "tagline": "A simple appointment calendar for healthcare professionals.",
+    "description": "Patients book and cancel visits online. The doctor manages the calendar, visit history, and internal notes.",
+    "bootstrapNotice": "Project scaffold (Milestone 0). Booking features will arrive in later milestones.",
+    "bookCta": "Book an appointment"
+  },
+  "booking": {
+    "title": "Book an appointment",
+    "subtitle": "with {doctor} at {clinic}",
+    "notConfigured": "Online booking is not available yet. Please contact the clinic directly.",
+    "selectDate": "Select a date",
+    "selectTime": "Select a time",
+    "noSlots": "No times available on this day.",
+    "noSlotsWindow": "No appointments are available in the coming weeks. Please check back later.",
+    "selectedSlot": "Selected appointment: {datetime}",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone",
+    "email": "Email",
+    "message": "Message (optional)",
+    "messageWarning": "Please do not include sensitive medical details. This message is only a short note for the doctor.",
+    "consentText": "I agree to the processing of my personal data to book and manage this appointment.",
+    "privacyLinkLabel": "Read our privacy policy",
+    "submit": "Confirm booking",
+    "submitting": "Booking…",
+    "backHome": "Back to home",
+    "errors": {
+      "required": "This field is required.",
+      "invalidEmail": "Enter a valid email address.",
+      "tooLong": "This value is too long.",
+      "consentRequired": "Consent is required to book an appointment.",
+      "invalidSlot": "The selected time is invalid. Please choose another.",
+      "slotUnavailable": "Sorry, that time was just taken. Please choose another slot.",
+      "bookingNotConfigured": "Online booking is not available right now.",
+      "unexpected": "Something went wrong. Please try again."
+    },
+    "confirmation": {
+      "title": "Your appointment is booked",
+      "message": "Thank you. Your appointment request has been confirmed.",
+      "when": "Appointment: {datetime}",
+      "emailNote": "We have sent a confirmation email with a link to cancel if your plans change.",
+      "backHome": "Back to home"
+    }
+  },
+  "cancel": {
+    "title": "Cancel appointment",
+    "when": "Appointment: {datetime}",
+    "confirmPrompt": "Are you sure you want to cancel this appointment?",
+    "confirm": "Cancel appointment",
+    "cancelling": "Cancelling…",
+    "backHome": "Back to home",
+    "rebook": "Book a new appointment",
+    "invalidTitle": "Invalid or expired link",
+    "invalidMessage": "This cancellation link is not valid. If you still need to cancel, please contact the clinic directly.",
+    "alreadyCancelledTitle": "Appointment already cancelled",
+    "alreadyCancelledMessage": "This appointment has already been cancelled. No further action is needed.",
+    "cannotCancelTitle": "This appointment can no longer be cancelled",
+    "cannotCancelMessage": "Online cancellation is no longer available for this appointment. Please contact the clinic if you have questions.",
+    "successTitle": "Appointment cancelled",
+    "successMessage": "Your appointment has been cancelled. We have sent you a confirmation email.",
+    "errors": {
+      "notFound": "This cancellation link is not valid.",
+      "notCancellable": "This appointment can no longer be cancelled. Please reload the page.",
+      "unexpected": "Something went wrong. Please try again."
+    }
+  },
+  "admin": {
+    "nav": {
+      "brand": "MedSlot Admin",
+      "calendar": "Calendar",
+      "newAppointment": "New appointment",
+      "patients": "Patients",
+      "settings": "Availability",
+      "signedInAs": "Signed in as {email}",
+      "logout": "Log out"
+    },
+    "login": {
+      "title": "Admin sign in",
+      "subtitle": "Sign in to manage appointments.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "invalidCredentials": "Invalid email or password."
+    },
+    "calendar": {
+      "title": "Calendar",
+      "newAppointment": "New appointment",
+      "previous": "Previous",
+      "today": "Today",
+      "next": "Next",
+      "go": "Go",
+      "noAppointments": "No appointments on this day."
+    },
+    "appointment": {
+      "title": "Appointment details",
+      "backToCalendar": "Back to calendar",
+      "notFoundTitle": "Appointment not found",
+      "notFoundMessage": "This appointment does not exist or is not in your clinic.",
+      "when": "Date and time",
+      "source": "Source",
+      "patient": "Patient",
+      "phone": "Phone",
+      "email": "Email",
+      "message": "Patient message",
+      "noMessage": "—",
+      "viewPatient": "View patient history",
+      "actions": {
+        "markCompleted": "Mark completed",
+        "markNoShow": "Mark no-show",
+        "cancel": "Cancel appointment"
+      }
+    },
+    "manual": {
+      "title": "New appointment",
+      "subtitle": "Manually add an appointment booked by phone or in person.",
+      "backToCalendar": "Back to calendar",
+      "date": "Date",
+      "time": "Time",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Phone",
+      "email": "Email (optional)",
+      "message": "Note (optional)",
+      "messageWarning": "Internal note only. Do not store full medical documentation here.",
+      "submit": "Create appointment",
+      "submitting": "Creating…"
+    },
+    "status": {
+      "booked": "Booked",
+      "completed": "Completed",
+      "cancelled_by_patient": "Cancelled by patient",
+      "cancelled_by_doctor": "Cancelled by clinic",
+      "no_show": "No-show"
+    },
+    "source": {
+      "public_booking": "Online",
+      "manual_admin": "Manual"
+    },
+    "settings": {
+      "title": "Availability",
+      "subtitle": "Set your weekly working hours and block specific time off.",
+      "workingHoursTitle": "Working hours",
+      "workingHoursSubtitle": "Patients can only book inside active working hours.",
+      "startTime": "From",
+      "endTime": "To",
+      "save": "Save working hours",
+      "saving": "Saving…",
+      "saved": "Working hours saved.",
+      "weekdays": {
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+        "7": "Sunday"
+      },
+      "blockedTitle": "Blocked time",
+      "blockedSubtitle": "Block holidays, breaks, or time off. Blocked time cannot be booked.",
+      "blockedDate": "Date",
+      "blockedFrom": "From",
+      "blockedTo": "To",
+      "blockedReason": "Reason (optional)",
+      "blockedReasonPlaceholder": "e.g. holiday",
+      "addBlocked": "Add blocked time",
+      "addingBlocked": "Adding…",
+      "blockedAdded": "Blocked time added.",
+      "noBlocked": "No upcoming blocked time.",
+      "removeBlocked": "Remove",
+      "notConfigured": "No doctor is configured yet."
+    },
+    "patients": {
+      "title": "Patients",
+      "subtitle": "Browse patients, review visit history, and export visits.",
+      "exportTitle": "Export visits",
+      "exportSubtitle": "Download a CSV of visits within a date range.",
+      "listTitle": "All patients",
+      "noPatients": "No patients yet.",
+      "visits": "{count, plural, =0 {No visits} one {# visit} other {# visits}}",
+      "lastVisit": "Last visit",
+      "phone": "Phone",
+      "email": "Email",
+      "copyContact": "Copy contact",
+      "copied": "Copied",
+      "backToPatients": "Back to patients",
+      "notFoundTitle": "Patient not found",
+      "notFoundMessage": "This patient does not exist or is not in your clinic.",
+      "historyTitle": "Visit history",
+      "noHistory": "No visits yet.",
+      "dataTitle": "Data & privacy",
+      "dataSubtitle": "Export this patient's data or anonymize it on request (GDPR/RODO).",
+      "exportData": "Export patient data (JSON)",
+      "anonymizeTitle": "Anonymize patient",
+      "anonymizeWarning": "This permanently removes the patient's name and contact details and deletes their internal notes. Past appointments are kept without personal data. This cannot be undone.",
+      "anonymizeConfirm": "I understand this action is permanent.",
+      "anonymizeCta": "Anonymize patient",
+      "anonymizing": "Anonymizing…",
+      "anonymizedBadge": "Anonymized",
+      "anonymizedNotice": "This patient's personal data has been anonymized.",
+      "anonymizeDone": "Patient data anonymized."
+    },
+    "notes": {
+      "title": "Internal notes",
+      "addTitle": "Add a note",
+      "placeholder": "Write an internal note…",
+      "warning": "Internal note. Do not use this field as full medical documentation unless the system has been configured and legally reviewed for medical records processing.",
+      "add": "Add note",
+      "adding": "Adding…",
+      "saved": "Note saved.",
+      "empty": "No notes yet.",
+      "forVisit": "Linked to a visit",
+      "copyVisit": "Copy visit summary",
+      "copied": "Copied"
+    },
+    "export": {
+      "from": "From",
+      "to": "To",
+      "submit": "Download CSV"
+    },
+    "errors": {
+      "required": "This field is required.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidDate": "Enter a valid date.",
+      "invalidRange": "The end date must be on or after the start date.",
+      "invalidTime": "Enter a valid time.",
+      "endBeforeStart": "End time must be after start time.",
+      "tooLong": "This value is too long.",
+      "slotUnavailable": "That time overlaps another appointment. Please choose another.",
+      "notConfigured": "Booking is not configured yet.",
+      "confirmRequired": "Please confirm to continue.",
+      "patientHasFutureAppointments": "This patient has upcoming booked appointments. Cancel or complete them first.",
+      "alreadyAnonymized": "This patient has already been anonymized.",
+      "unexpected": "Something went wrong. Please try again."
+    }
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "lastUpdated": "Version {version}",
+    "intro": "This policy explains how your personal data is processed when you book an appointment through this site.",
+    "sections": {
+      "controller": {
+        "title": "Who is responsible",
+        "body": "The clinic you are booking with is the data controller responsible for your personal data. Its full identity and contact details are provided by the clinic."
+      },
+      "dataProcessed": {
+        "title": "What data we process",
+        "body": "We process the data you provide to book a visit: your first name, last name, phone number, email address, and any short note you add. We also store appointment dates and their status."
+      },
+      "purpose": {
+        "title": "Why we process it",
+        "body": "Your data is used to schedule, confirm, manage, and cancel your appointment, and to contact you about it."
+      },
+      "legalBasis": {
+        "title": "Legal basis",
+        "body": "We process your data based on your consent and to take steps to provide the service you request. You can withdraw consent at any time, which does not affect processing already carried out."
+      },
+      "recipients": {
+        "title": "Who can see your data",
+        "body": "Your data is accessible to the clinic's staff. It may be processed by technical service providers (such as hosting and email delivery) acting on the clinic's behalf. We do not sell your data."
+      },
+      "retention": {
+        "title": "How long we keep it",
+        "body": "We keep your data for as long as needed to manage your care relationship and to meet legal obligations. After a defined period of inactivity, your contact details are anonymized."
+      },
+      "rights": {
+        "title": "Your rights",
+        "body": "You have the right to access, correct, delete, and receive a copy of your data, and to object to or restrict its processing. To exercise these rights, contact the clinic."
+      },
+      "voluntary": {
+        "title": "Is providing data required",
+        "body": "Providing your contact details is necessary to book and manage an appointment. The optional note is voluntary; please do not include sensitive medical details."
+      },
+      "security": {
+        "title": "Security",
+        "body": "We use appropriate technical and organizational measures to protect your data. Cancellation links are stored only as hashes, and sensitive actions are logged."
+      }
+    },
+    "contactNotice": "The clinic provides its full identity, contact details, and any supervisory authority information in line with applicable law.",
+    "backHome": "Back to home",
+    "bookCta": "Book an appointment"
+  },
+  "emails": {
+    "bookingConfirmation": {
+      "subject": "Appointment confirmation – {clinic}",
+      "greeting": "Hello,",
+      "body": "Your appointment with {doctor} is confirmed for {datetime}.",
+      "cancelIntro": "If you need to cancel, use the link below:",
+      "signature": "{clinic}"
+    },
+    "cancellationConfirmation": {
+      "subject": "Appointment cancelled – {clinic}",
+      "greeting": "Hello,",
+      "body": "Your appointment with {doctor} on {datetime} has been cancelled.",
+      "rebookIntro": "Would you like to book another time? Use the link below:",
+      "signature": "{clinic}"
+    }
+  }
+}

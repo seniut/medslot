@@ -1,0 +1,113 @@
+# Changelog
+
+All notable product and technical changes must be documented here.
+
+Use this format:
+
+## [Unreleased]
+
+### Added
+- Initial project handbook.
+- Milestone 0 bootstrap: Next.js 16 (App Router) + TypeScript (strict), Tailwind CSS v4, shadcn/ui foundation (`components.json`, `cn` util, `Button`), and ESLint 9 / Prettier 3 tooling.
+- Internationalization scaffolding with `next-intl` (Polish default + English): locale routing (`/pl`, `/en`), `src/i18n/{routing,request,navigation}.ts`, `src/proxy.ts`, message catalogs in `src/i18n/messages/{pl,en}.json`, and a localized home page with a `PL | EN` language switcher.
+- Prisma wiring: `prisma/schema.prisma` (datasource + generator only) and a `src/db/prisma.ts` singleton client.
+- Modular source skeleton under `src/server/*`, `src/components/*`, and `src/lib/*` per `docs/02-architecture.md`.
+- npm scripts: `typecheck`, `format`, `format:check`, `prisma:*`, `db:seed`, and `check`.
+- Milestone 1 database model: Prisma schema with nine models (`Clinic`, `Doctor`, `Patient`, `Appointment`, `DoctorNote`, `WorkingHour`, `BlockedTime`, `ConsentRecord`, `AuditLog`) and the `AppointmentStatus` / `AppointmentSource` enums.
+- Initial migration (`*_init`) plus a raw-SQL migration (`*_appointment_no_overlap`) that enables `btree_gist` and adds a GiST exclusion constraint preventing overlapping `booked` appointments per doctor.
+- Idempotent database seed (`prisma/seed.ts`) creating one clinic and one doctor.
+- Milestone 2 patient booking flow: public booking page (`/[locale]/booking`) with weekday/slot selection and a PII-free confirmation page (`/[locale]/booking/confirmation`).
+- Server-side availability engine (`src/server/appointments/getAvailability.ts`) that derives free slots from working hours, blocked time, and existing `booked` appointments; timezone- and DST-correct via the built-in `Intl` APIs (`src/lib/date-time/*`).
+- Transactional booking creation (`src/server/appointments/createAppointment.ts`) behind a Zod-validated server action (`actions.ts`): patient dedup, consent record, and audit log are written atomically; double-booking is rejected by the `appointment_no_overlap` constraint and surfaced as a localized error.
+- Cancellation token generation (`src/lib/security/tokens.ts`): a one-time token is emailed while only its SHA-256 hash is stored.
+- Log-only email adapter (`src/server/email/*`) with a localized booking-confirmation message (Polish/English).
+- Booking i18n namespaces (`booking`, `emails.bookingConfirmation`) in both locales, plus a home-page "Book an appointment" call to action.
+- Milestone 3 cancellation flow: public cancellation page (`/[locale]/cancel/[token]`) that looks an appointment up by the SHA-256 hash of its emailed token and shows only the appointment date/time (no patient data).
+- Token-scoped cancellation read model (`src/server/appointments/getCancellation.ts`) and transactional cancellation (`src/server/appointments/cancelAppointment.ts`): only `booked`, future appointments are cancellable; the status changes to `cancelled_by_patient` with `cancelledAt`, the record is never deleted, and the action is audited (`appointment.cancelled_by_patient`).
+- Zod-validated cancel server action (`src/server/appointments/cancelActions.ts`) plus a confirm component (`src/components/booking/cancel-confirm.tsx`) using stable error codes; double cancellation and invalid/expired tokens fail safely.
+- Localized cancellation-confirmation email (`src/server/email/sendCancellationEmail.ts`) with a re-book link.
+- Cancellation i18n namespaces (`cancel`, `cancel.errors`, `emails.cancellationConfirmation`) in both locales.
+- Milestone 4 admin authentication and calendar: email/password sign-in (`/[locale]/admin/login`), a day-view admin calendar (`/[locale]/admin/calendar`) with date navigation, an appointment detail page (`/[locale]/admin/appointments/[id]`), and a manual-appointment creation form (`/[locale]/admin/appointments/new`).
+- `AdminUser` model and migration (`*_add_admin_user`) scoped to a clinic and (optionally) a doctor; the seed creates one admin user idempotently from `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
+- Stateless signed-cookie admin sessions (`src/server/auth/*`): HMAC-SHA256-signed session cookie carrying only the admin user id, with authorization data (clinic, role) re-loaded from the database on every request; password hashing uses `scrypt` (`src/lib/security/password.ts`).
+- Admin read models (`getAdminCalendarDay`, `getAppointmentDetail`) and clinic-scoped admin mutations (`adminActions.ts`): mark completed, mark no-show, cancel by doctor, and create manual appointment — all audited.
+- Manual appointment creation (`src/server/appointments/createManualAppointment.ts`) reuses the same overlap/double-booking protection as public booking (shared `isNoOverlapViolation` in `overlap.ts`).
+- Admin i18n namespace (`admin`, including `admin.nav/login/calendar/appointment/manual/status/source/errors`) in both Polish and English.
+- Milestone 5 availability management: an admin Availability page (`/[locale]/admin/settings`, linked from the admin nav) where the doctor edits weekly working hours and creates or removes blocked time. Both controls re-shape patient-facing availability (the public booking date list and time slots) immediately.
+- Availability server modules (`src/server/availability/*`): `getDoctorWorkingHours` / `updateDoctorWorkingHours` (transactional replace-all of the seven weekday rows), `getUpcomingBlockedTimes` / `createDoctorBlockedTime` / `deleteDoctorBlockedTime`, plus the Zod/`useActionState` server actions in `availabilityActions.ts`.
+- Working-hours and blocked-time validation schemas (`src/lib/validation/{workingHoursSchema,blockedTimeSchema}.ts`) with stable, localizable error codes (`endBeforeStart`, etc.); blocked-time wall-clock input is converted to absolute UTC instants in the clinic timezone so it lines up with appointments and survives DST.
+- Availability i18n (`admin.settings` namespace, weekday labels, and `admin.errors.endBeforeStart`) in both Polish and English.
+- Milestone 6 patient history, internal notes, and CSV export: a patient list page (`/[locale]/admin/patients`, linked from the admin nav) showing visit counts and last visit, and a patient detail page (`/[locale]/admin/patients/[id]`) with full visit history (every status, including completed/cancelled/no-show) and internal notes.
+- Internal notes UI on both the patient detail and appointment detail pages: an add-note form (`src/components/admin/note-form.tsx`) with a GDPR/RODO warning, plus a “Copy contact” / “Copy visit summary” helper (`src/components/admin/copy-button.tsx`) and a “View patient history” link from each appointment.
+- Patient read models (`src/server/patients/getPatients.ts`, `getPatientDetail.ts`) and note write logic (`src/server/notes/{createNote,noteActions}.ts`) with the `noteSchema` validation schema and stable, localizable error codes.
+- Date-range CSV export of visits: a server module (`src/server/export/exportAppointments.ts`) and a `nodejs` route handler (`/api/admin/export/appointments`) that streams a CSV attachment for an inclusive date range, with a CSV-injection-safe builder (`src/lib/csv.ts`) and `exportRangeSchema` validation; the export form lives on the patient list page.
+- `getAppointmentDetail` now also returns the patient id and the appointment's internal notes so the appointment page can show and add notes.
+- Patients/notes/export i18n (`admin.patients`, `admin.notes`, `admin.export` namespaces, `admin.nav.patients`, `admin.appointment.viewPatient`, `admin.errors.invalidRange`) in both Polish and English.
+- Milestone 7 GDPR/RODO hardening: a public, versioned privacy policy page (`/[locale]/privacy`) in Polish and English, linked from the booking consent block and the home page; per-patient data export, a manual anonymization workflow, and a configurable data-retention sweep.
+- Per-patient data export: an admin-only `nodejs` route handler (`/api/admin/patients/[id]/export`, `src/server/patients/exportPatientData.ts`) that streams a JSON attachment with the patient's profile, full appointment list, internal notes, and consent records for GDPR/RODO access/portability requests.
+- Patient anonymization (right to erasure): `src/server/patients/anonymizePatient.ts` plus a confirmation-gated, destructive form on the patient detail page (`src/components/admin/anonymize-patient-form.tsx`, `src/server/patients/patientActions.ts`, `src/lib/validation/patientSchema.ts`) that redacts the patient's name/contact fields, sets `anonymizedAt`, clears free-text patient messages, and deletes internal notes — while preserving the appointments (date/time/status) for history. An "Anonymized" badge appears on the patient list and detail pages.
+- Configurable data-retention sweep: `src/server/retention/retentionSweep.ts`, a runnable CLI (`scripts/retention-sweep.ts`, `pnpm retention:sweep`), and a `src/lib/retention-config.ts` reading `RETENTION_MONTHS` (default 24). The sweep anonymizes patients whose most recent appointment predates the retention window and who have no future appointments.
+- Privacy/anonymization i18n (`privacy` namespace, `booking.privacyLinkLabel`, `common.privacyPolicy`, `admin.patients` data-rights keys, `admin.errors.confirmRequired/patientHasFutureAppointments/alreadyAnonymized`) in both Polish and English.
+- SMTP email provider: setting `EMAIL_PROVIDER=smtp` sends real booking-confirmation and cancellation emails through any SMTP server (Gmail-compatible) via `nodemailer` (`src/server/email/adapter.ts`). `.env.example` documents the Gmail setup (host, port 465, App Password).
+- Automated test suite (Vitest): a `unit` project (`tests/unit/`) covering pure logic (validation schemas, date/timezone math, availability interval helpers, CSV building, token hashing) and an `integration` project (`tests/integration/`) covering server/database behavior (booking, the database-level no-overlap constraint, availability, cancellation, manual appointments, working hours, blocked time, patient history, notes, GDPR anonymization/retention, and CSV export), with shared factories and a `prisma migrate deploy`-based test database.
+- Test scripts: `test`, `test:unit`, `test:integration`, `test:watch`, `test:coverage`, `test:e2e`, and `verify` (lint + typecheck + test).
+- A Husky pre-commit hook (`.husky/pre-commit`) plus `lint-staged` that run `lint-staged`, `pnpm typecheck`, and `pnpm test` before each commit; the `prepare` script installs the hook on `pnpm install`.
+- `docker-compose.yml` for a local PostgreSQL matching `.env.example` (postgres/postgres on `localhost:5432`, database `medslot`), used for development and the integration tests.
+- `docs/11-database-access.md`: how to connect to the database directly — locally (Docker `psql` / Prisma Studio) and in production (Neon SQL editor / direct `psql` / Prisma Studio) — plus VS Code extensions (Prisma, Microsoft PostgreSQL, SQLTools), read-only example SQL queries, and GDPR-safe access guidance.
+
+### Changed
+- Pinned Prisma to the v6 line (see `DECISIONS.md`, Decision 007); Prisma 7 dropped the `datasource.url` schema property assumed by the handbook.
+- `lint` script uses the ESLint CLI (`eslint`) because Next.js 16 removed `next lint`.
+- The i18n request handler runs as `src/proxy.ts` (Next.js 16 renamed the `middleware` file convention to `proxy`).
+- The no-overlap constraint uses `tsrange` over UTC `timestamp(3)` columns instead of the conceptual `tstzrange` (see `DECISIONS.md`, Decision 008).
+- `prisma/seed.ts` now also seeds Monday–Friday 09:00–17:00 working hours for the demo doctor (idempotent), so the booking flow has availability out of the box.
+- Added `zod` as the server-side validation library; booking input is validated with stable error codes that are translated in the UI.
+- The booking and confirmation pages opt into dynamic rendering (`export const dynamic = "force-dynamic"`) because availability is live data and must never be statically prerendered.
+- The CSV export is served by a route handler under `/api` (outside the locale middleware) and authenticates via the admin session cookie; unauthenticated requests are redirected to login. The exported file is prefixed with a UTF-8 BOM and uses CRLF line endings for spreadsheet compatibility, and dates/times are rendered in the clinic timezone.
+- The booking consent block now links to the new privacy policy page, and the home page exposes a privacy policy link. Anonymization is irreversible, so it requires an explicit in-form confirmation and re-checks the session and clinic scope server-side. No schema change or migration was required: Milestone 7 reuses `Patient.anonymizedAt` / `deletedAt` and the existing `ConsentRecord`, and deliberately leaves the `Appointment` schema untouched to keep future ICS calendar-invite support open.
+- The email adapter is now selected at runtime by `EMAIL_PROVIDER` (`log` default, `smtp`, with `resend` reserved for later); the default `log` provider sends nothing, so local development and trials never email real patients by accident, and incomplete SMTP settings fall back to `log` rather than failing a booking.
+- The build now runs `prisma generate` via a `postinstall` script so the Prisma Client is always generated on hosts such as Vercel, and `nodemailer` is declared in `serverExternalPackages` (`next.config.ts`) so the Node-only package is not bundled.
+- The Prisma datasource now declares a separate `directUrl` (`DIRECT_URL`) alongside the runtime `url` (`DATABASE_URL`), so serverless runtime queries use a pooled connection while migrations use a direct one (see `DECISIONS.md`, Decision 011). No schema model changed; for local single-Postgres dev `DIRECT_URL` mirrors `DATABASE_URL`.
+- The database seed (`prisma/seed.ts`) is now env-driven: clinic and doctor details (`CLINIC_NAME`, `CLINIC_SLUG`, `CLINIC_TIMEZONE`, `DEFAULT_LOCALE`, `DOCTOR_DISPLAY_NAME`, `DOCTOR_EMAIL`, optional `DOCTOR_TIMEZONE`) come from environment variables with demo defaults, so the same idempotent script seeds a real single-doctor deployment.
+- `.env.example` now summarizes which variables are required at runtime, for migrations/seeding, and only for SMTP, and `docs/07-runbook-dev-deploy.md` adds a free-stack deploy checklist (Neon EU + Gmail SMTP + Vercel Hobby) for a single-doctor trial.
+- `docs/07-runbook-dev-deploy.md` now documents the test suite (commands, the derived `_test` database, and the pre-commit hook) and expands the deploy guide into an end-to-end "create the repo → Neon → Gmail → Vercel" walkthrough; `README.md` gains a Testing section.
+- `README.md` stack list now reflects the implemented stack (custom signed-cookie admin session with scrypt, a log/SMTP email adapter, custom day-view calendar and slot picker, Vitest) instead of the original scaffolding placeholders (FullCalendar, Auth.js/Supabase, Resend/Postmark).
+
+### Fixed
+- None.
+
+### Security
+- `.gitignore` keeps `.env*` ignored while tracking `.env.example`; no secrets committed.
+- `Appointment.cancelTokenHash` stores only a hashed cancellation token (never the raw token); `Patient.deletedAt` / `anonymizedAt` support GDPR/RODO erasure and anonymization without destroying business history.
+- Public availability queries never select patient fields; the booking calendar and confirmation page expose no patient data.
+- Booking consent is captured as a `ConsentRecord` with a privacy-text version; the patient's IP address and user-agent are stored only as SHA-256 hashes.
+- The email adapter logs no recipients, message contents, or token-bearing cancellation links.
+- Cancellation looks appointments up only by the SHA-256 hash of the emailed token (the raw token is never stored or logged); the cancel page selects no patient fields and exposes only the appointment date/time.
+- Cancellation is a soft status change (`cancelled_by_patient` + `cancelledAt`); appointments are never deleted, so visit history is preserved while the freed future slot becomes bookable again. Invalid, expired, and already-cancelled tokens fail safely without revealing whether a token existed.
+- Admin passwords are stored only as `scrypt` hashes; login uses a constant-time dummy-hash comparison so a missing email and a wrong password are indistinguishable (no user enumeration), and credential errors collapse to one generic message.
+- Admin sessions are stateless HMAC-SHA256-signed cookies (httpOnly, sameSite=lax, secure in production) carrying only the admin user id; clinic and role are re-loaded from the database on every request and never trusted from the cookie. Every protected admin page and server action enforces the session and scopes all queries by `clinicId`.
+- Admin actions are audited (`appointment.created_manual`, `appointment.completed`, `appointment.no_show`, `appointment.cancelled_by_doctor`) with the acting admin user id; the admin area exposes patient data only to authenticated staff and never on public pages. Manual appointments use the same database-level overlap protection as public bookings.
+- Availability changes are clinic-scoped and audited (`working_hours.updated`, `blocked_time.created`, `blocked_time.deleted`) with the acting admin user id; blocked-time deletion is scoped by clinic so a tampered id cannot remove another clinic's data, and the free-text blocked-time reason is never written to the audit log. The availability page contains no patient data.
+- Patient history, internal notes, and CSV export are admin-only: every patients/notes/export path enforces the admin session and scopes all queries by `clinicId`, so patient data and notes are never exposed on public pages. Note creation verifies the patient (and any linked appointment) belong to the clinic.
+- Note creation and CSV export are audited (`note.created`, `export.appointments_csv`) with the acting admin user id; note content is never written to the audit log (only a `hasAppointment` flag), and the export audit records only the date range and row count (never patient data). Notes are treated as internal notes, not full medical documentation, and the note field carries a GDPR/RODO warning.
+- The CSV export is hardened against formula injection (`src/lib/csv.ts`): any cell beginning with `=`, `+`, `-`, `@`, tab, or carriage return is prefixed with an apostrophe before RFC-4180 quoting, so spreadsheet apps cannot execute exported patient data as a formula.
+- Patient data export, anonymization, and the retention sweep are clinic-scoped and audited with three new actions (`patient.exported`, `patient.anonymized`, `retention.anonymized`); the audit metadata records only counts (e.g. `notesDeleted`, `appointmentsRedacted`, `reason`) and never patient data. Export is admin-only; a patient from another clinic is treated as not found.
+- Anonymization refuses to run while a patient has future `booked` appointments (those must be cancelled or completed first) and is idempotent (a second attempt is rejected), so contact data needed to manage an upcoming visit is never destroyed. It sets `anonymizedAt` but leaves `deletedAt` null, so the redacted record stays visible to staff as "Anonymized" and aggregate history survives; appointments are never physically deleted.
+- The public privacy policy page is versioned (it shows `PRIVACY_TEXT_VERSION`) and contains no patient data; the retention window is configurable via `RETENTION_MONTHS` and the sweep prints only aggregate counts (never patient names, emails, phones, or note content).
+- Integration tests run against a dedicated `_test` database (derived from `DATABASE_URL` or `TEST_DATABASE_URL`), never the development or production database, and assert privacy-preserving behavior directly: the cancellation lookup returns no patient fields, audit metadata carries only counts, and the CSV export neutralizes formula injection. The suite uses throwaway seed data and no real secrets.
+
+## Rules
+
+Every pull request that changes behavior must update this file.
+
+Examples of changes that require changelog updates:
+
+- new booking behavior;
+- changes to cancellation logic;
+- changes to working hours logic;
+- database schema migrations;
+- privacy/GDPR changes;
+- admin export format changes;
+- authentication changes;
+- notification changes.
+

@@ -1,0 +1,222 @@
+// MedSlot Prisma schema.
+//
+// Milestone 1 introduces the domain data model and the appointment no-overlap
+// exclusion constraint (added in a separate raw-SQL migration).
+// See docs/03-data-model.md for the design rationale.
+//
+// Privacy notes:
+// - Appointments are never physically deleted in normal operations; status
+//   changes instead (see AppointmentStatus).
+// - Only `booked` appointments block availability and the no-overlap constraint.
+// - Patient contact fields support soft-delete / anonymization (deletedAt,
+//   anonymizedAt) for GDPR/RODO erasure flows.
+// - Cancellation tokens are stored only as a hash (cancelTokenHash).
+// - DoctorNote is an internal note field, not full medical documentation.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Runtime queries use the pooled connection (e.g. Neon's pgBouncer endpoint),
+  // which is required for serverless hosts such as Vercel.
+  url       = env("DATABASE_URL")
+  // Migrations and introspection use a direct (unpooled) connection.
+  // For local single-Postgres dev, set DIRECT_URL to the same value as DATABASE_URL.
+  directUrl = env("DIRECT_URL")
+}
+
+enum AppointmentStatus {
+  booked
+  completed
+  cancelled_by_patient
+  cancelled_by_doctor
+  no_show
+}
+
+enum AppointmentSource {
+  public_booking
+  manual_admin
+}
+
+model Clinic {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  defaultLocale String   @default("pl")
+  timezone      String   @default("Europe/Warsaw")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  doctors      Doctor[]
+  patients     Patient[]
+  appointments Appointment[]
+  adminUsers   AdminUser[]
+}
+
+model Doctor {
+  id          String   @id @default(cuid())
+  clinicId    String
+  displayName String
+  email       String
+  phone       String?
+  timezone    String   @default("Europe/Warsaw")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  clinic       Clinic        @relation(fields: [clinicId], references: [id])
+  appointments Appointment[]
+  workingHours WorkingHour[]
+  blockedTimes BlockedTime[]
+  adminUsers   AdminUser[]
+
+  @@index([clinicId])
+}
+
+model Patient {
+  id           String    @id @default(cuid())
+  clinicId     String
+  firstName    String
+  lastName     String
+  phone        String
+  email        String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+  anonymizedAt DateTime?
+
+  clinic       Clinic        @relation(fields: [clinicId], references: [id])
+  appointments Appointment[]
+  notes        DoctorNote[]
+
+  @@index([clinicId, email])
+  @@index([clinicId, phone])
+}
+
+model Appointment {
+  id              String            @id @default(cuid())
+  clinicId        String
+  doctorId        String
+  patientId       String
+  startsAt        DateTime
+  endsAt          DateTime
+  status          AppointmentStatus @default(booked)
+  source          AppointmentSource @default(public_booking)
+  patientMessage  String?
+  cancelTokenHash String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  cancelledAt     DateTime?
+  completedAt     DateTime?
+
+  clinic   Clinic          @relation(fields: [clinicId], references: [id])
+  doctor   Doctor          @relation(fields: [doctorId], references: [id])
+  patient  Patient         @relation(fields: [patientId], references: [id])
+  notes    DoctorNote[]
+  consents ConsentRecord[]
+
+  @@index([clinicId, doctorId, startsAt])
+  @@index([clinicId, patientId, startsAt])
+  @@index([status])
+}
+
+model DoctorNote {
+  id            String   @id @default(cuid())
+  clinicId      String
+  doctorId      String
+  patientId     String
+  appointmentId String?
+  content       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  patient     Patient      @relation(fields: [patientId], references: [id])
+  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+
+  @@index([clinicId, patientId])
+  @@index([clinicId, appointmentId])
+}
+
+model WorkingHour {
+  id        String   @id @default(cuid())
+  clinicId  String
+  doctorId  String
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+
+  @@index([clinicId, doctorId, dayOfWeek])
+}
+
+model BlockedTime {
+  id        String   @id @default(cuid())
+  clinicId  String
+  doctorId  String
+  startsAt  DateTime
+  endsAt    DateTime
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+
+  @@index([clinicId, doctorId, startsAt])
+}
+
+model ConsentRecord {
+  id            String   @id @default(cuid())
+  clinicId      String
+  patientId     String
+  appointmentId String
+  type          String
+  textVersion   String
+  acceptedAt    DateTime @default(now())
+  ipAddressHash String?
+  userAgentHash String?
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+
+  @@index([clinicId, patientId])
+  @@index([clinicId, appointmentId])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  clinicId    String
+  actorType   String
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([clinicId, createdAt])
+  @@index([clinicId, entityType, entityId])
+}
+
+// AdminUser authenticates into the admin area. MVP is single-clinic/single-doctor;
+// `role` is an open string ("owner"/"doctor" today, "receptionist"/"admin" later)
+// validated in application code. Only a scrypt password hash is stored, never a
+// raw password. See docs/03-data-model.md and DECISIONS.md (Decision 009).
+model AdminUser {
+  id           String   @id @default(cuid())
+  clinicId     String
+  doctorId     String?
+  email        String   @unique
+  passwordHash String
+  role         String   @default("owner")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clinic Clinic  @relation(fields: [clinicId], references: [id])
+  doctor Doctor? @relation(fields: [doctorId], references: [id])
+
+  @@index([clinicId])
+}

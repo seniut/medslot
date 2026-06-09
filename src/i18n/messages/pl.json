@@ -1,0 +1,305 @@
+{
+  "common": {
+    "appName": "MedSlot",
+    "privacyPolicy": "Polityka prywatności"
+  },
+  "home": {
+    "title": "MedSlot",
+    "tagline": "Prosty kalendarz wizyt dla specjalistów ochrony zdrowia.",
+    "description": "Pacjenci rezerwują i odwołują wizyty online. Lekarz zarządza kalendarzem, historią wizyt i notatkami wewnętrznymi.",
+    "bootstrapNotice": "Szkielet projektu (Milestone 0). Funkcje rezerwacji pojawią się w kolejnych etapach.",
+    "bookCta": "Umów wizytę"
+  },
+  "booking": {
+    "title": "Umów wizytę",
+    "subtitle": "u {doctor} w {clinic}",
+    "notConfigured": "Rezerwacja online nie jest jeszcze dostępna. Prosimy o kontakt z gabinetem.",
+    "selectDate": "Wybierz dzień",
+    "selectTime": "Wybierz godzinę",
+    "noSlots": "Brak wolnych terminów w tym dniu.",
+    "noSlotsWindow": "Brak wolnych terminów w najbliższych tygodniach. Prosimy sprawdzić później.",
+    "selectedSlot": "Wybrany termin: {datetime}",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "phone": "Telefon",
+    "email": "E-mail",
+    "message": "Wiadomość (opcjonalnie)",
+    "messageWarning": "Prosimy nie podawać wrażliwych informacji medycznych. To tylko krótka notatka dla lekarza.",
+    "consentText": "Wyrażam zgodę na przetwarzanie moich danych osobowych w celu rezerwacji i obsługi tej wizyty.",
+    "privacyLinkLabel": "Przeczytaj naszą politykę prywatności",
+    "submit": "Potwierdź rezerwację",
+    "submitting": "Rezerwowanie…",
+    "backHome": "Powrót do strony głównej",
+    "errors": {
+      "required": "To pole jest wymagane.",
+      "invalidEmail": "Podaj prawidłowy adres e-mail.",
+      "tooLong": "Ta wartość jest za długa.",
+      "consentRequired": "Zgoda jest wymagana, aby umówić wizytę.",
+      "invalidSlot": "Wybrany termin jest nieprawidłowy. Wybierz inny.",
+      "slotUnavailable": "Niestety ten termin został właśnie zajęty. Wybierz inny.",
+      "bookingNotConfigured": "Rezerwacja online jest obecnie niedostępna.",
+      "unexpected": "Coś poszło nie tak. Spróbuj ponownie."
+    },
+    "confirmation": {
+      "title": "Twoja wizyta została umówiona",
+      "message": "Dziękujemy. Twoja rezerwacja została potwierdzona.",
+      "when": "Termin: {datetime}",
+      "emailNote": "Wysłaliśmy e-mail z potwierdzeniem oraz linkiem do odwołania wizyty, jeśli Twoje plany się zmienią.",
+      "backHome": "Powrót do strony głównej"
+    }
+  },
+  "cancel": {
+    "title": "Odwołaj wizytę",
+    "when": "Termin: {datetime}",
+    "confirmPrompt": "Czy na pewno chcesz odwołać tę wizytę?",
+    "confirm": "Odwołaj wizytę",
+    "cancelling": "Odwoływanie…",
+    "backHome": "Powrót do strony głównej",
+    "rebook": "Umów nową wizytę",
+    "invalidTitle": "Nieprawidłowy lub wygasły link",
+    "invalidMessage": "Ten link do odwołania jest nieprawidłowy. Jeśli nadal chcesz odwołać wizytę, skontaktuj się bezpośrednio z gabinetem.",
+    "alreadyCancelledTitle": "Wizyta została już odwołana",
+    "alreadyCancelledMessage": "Ta wizyta została już odwołana. Nie są potrzebne żadne dalsze działania.",
+    "cannotCancelTitle": "Tej wizyty nie można już odwołać",
+    "cannotCancelMessage": "Odwołanie online nie jest już dostępne dla tej wizyty. W razie pytań skontaktuj się z gabinetem.",
+    "successTitle": "Wizyta odwołana",
+    "successMessage": "Twoja wizyta została odwołana. Wysłaliśmy Ci e-mail z potwierdzeniem.",
+    "errors": {
+      "notFound": "Ten link do odwołania jest nieprawidłowy.",
+      "notCancellable": "Tej wizyty nie można już odwołać. Odśwież stronę.",
+      "unexpected": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
+  "admin": {
+    "nav": {
+      "brand": "MedSlot Panel",
+      "calendar": "Kalendarz",
+      "newAppointment": "Nowa wizyta",
+      "patients": "Pacjenci",
+      "settings": "Dostępność",
+      "signedInAs": "Zalogowano jako {email}",
+      "logout": "Wyloguj"
+    },
+    "login": {
+      "title": "Logowanie do panelu",
+      "subtitle": "Zaloguj się, aby zarządzać wizytami.",
+      "email": "E-mail",
+      "password": "Hasło",
+      "submit": "Zaloguj się",
+      "submitting": "Logowanie…",
+      "invalidCredentials": "Nieprawidłowy e-mail lub hasło."
+    },
+    "calendar": {
+      "title": "Kalendarz",
+      "newAppointment": "Nowa wizyta",
+      "previous": "Poprzedni",
+      "today": "Dziś",
+      "next": "Następny",
+      "go": "Przejdź",
+      "noAppointments": "Brak wizyt w tym dniu."
+    },
+    "appointment": {
+      "title": "Szczegóły wizyty",
+      "backToCalendar": "Powrót do kalendarza",
+      "notFoundTitle": "Nie znaleziono wizyty",
+      "notFoundMessage": "Ta wizyta nie istnieje lub nie należy do Twojego gabinetu.",
+      "when": "Data i godzina",
+      "source": "Źródło",
+      "patient": "Pacjent",
+      "phone": "Telefon",
+      "email": "E-mail",
+      "message": "Wiadomość pacjenta",
+      "noMessage": "—",
+      "viewPatient": "Zobacz historię pacjenta",
+      "actions": {
+        "markCompleted": "Oznacz jako odbytą",
+        "markNoShow": "Oznacz jako nieobecność",
+        "cancel": "Odwołaj wizytę"
+      }
+    },
+    "manual": {
+      "title": "Nowa wizyta",
+      "subtitle": "Ręcznie dodaj wizytę umówioną telefonicznie lub osobiście.",
+      "backToCalendar": "Powrót do kalendarza",
+      "date": "Data",
+      "time": "Godzina",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "phone": "Telefon",
+      "email": "E-mail (opcjonalnie)",
+      "message": "Notatka (opcjonalnie)",
+      "messageWarning": "Tylko notatka wewnętrzna. Nie przechowuj tu pełnej dokumentacji medycznej.",
+      "submit": "Utwórz wizytę",
+      "submitting": "Tworzenie…"
+    },
+    "status": {
+      "booked": "Zarezerwowana",
+      "completed": "Odbyta",
+      "cancelled_by_patient": "Odwołana przez pacjenta",
+      "cancelled_by_doctor": "Odwołana przez gabinet",
+      "no_show": "Nieobecność"
+    },
+    "source": {
+      "public_booking": "Online",
+      "manual_admin": "Ręczna"
+    },
+    "settings": {
+      "title": "Dostępność",
+      "subtitle": "Ustaw tygodniowe godziny pracy i zablokuj wybrany czas wolny.",
+      "workingHoursTitle": "Godziny pracy",
+      "workingHoursSubtitle": "Pacjenci mogą rezerwować tylko w aktywnych godzinach pracy.",
+      "startTime": "Od",
+      "endTime": "Do",
+      "save": "Zapisz godziny pracy",
+      "saving": "Zapisywanie…",
+      "saved": "Godziny pracy zapisane.",
+      "weekdays": {
+        "1": "Poniedziałek",
+        "2": "Wtorek",
+        "3": "Środa",
+        "4": "Czwartek",
+        "5": "Piątek",
+        "6": "Sobota",
+        "7": "Niedziela"
+      },
+      "blockedTitle": "Zablokowany czas",
+      "blockedSubtitle": "Zablokuj święta, przerwy lub czas wolny. Zablokowanego czasu nie można rezerwować.",
+      "blockedDate": "Data",
+      "blockedFrom": "Od",
+      "blockedTo": "Do",
+      "blockedReason": "Powód (opcjonalnie)",
+      "blockedReasonPlaceholder": "np. urlop",
+      "addBlocked": "Dodaj blokadę",
+      "addingBlocked": "Dodawanie…",
+      "blockedAdded": "Czas zablokowany.",
+      "noBlocked": "Brak nadchodzących blokad.",
+      "removeBlocked": "Usuń",
+      "notConfigured": "Nie skonfigurowano jeszcze lekarza."
+    },
+    "patients": {
+      "title": "Pacjenci",
+      "subtitle": "Przeglądaj pacjentów, sprawdź historię wizyt i eksportuj wizyty.",
+      "exportTitle": "Eksport wizyt",
+      "exportSubtitle": "Pobierz plik CSV z wizytami w wybranym zakresie dat.",
+      "listTitle": "Wszyscy pacjenci",
+      "noPatients": "Brak pacjentów.",
+      "visits": "{count, plural, =0 {Brak wizyt} one {# wizyta} few {# wizyty} many {# wizyt} other {# wizyt}}",
+      "lastVisit": "Ostatnia wizyta",
+      "phone": "Telefon",
+      "email": "E-mail",
+      "copyContact": "Kopiuj kontakt",
+      "copied": "Skopiowano",
+      "backToPatients": "Powrót do pacjentów",
+      "notFoundTitle": "Nie znaleziono pacjenta",
+      "notFoundMessage": "Ten pacjent nie istnieje lub nie należy do Twojego gabinetu.",
+      "historyTitle": "Historia wizyt",
+      "noHistory": "Brak wizyt.",
+      "dataTitle": "Dane i prywatność",
+      "dataSubtitle": "Wyeksportuj dane pacjenta lub zanonimizuj je na żądanie (RODO/GDPR).",
+      "exportData": "Eksportuj dane pacjenta (JSON)",
+      "anonymizeTitle": "Anonimizuj pacjenta",
+      "anonymizeWarning": "Ta operacja trwale usuwa imię, nazwisko i dane kontaktowe pacjenta oraz kasuje jego notatki wewnętrzne. Dotychczasowe wizyty zostają zachowane bez danych osobowych. Tej operacji nie można cofnąć.",
+      "anonymizeConfirm": "Rozumiem, że ta operacja jest nieodwracalna.",
+      "anonymizeCta": "Anonimizuj pacjenta",
+      "anonymizing": "Anonimizowanie…",
+      "anonymizedBadge": "Zanonimizowany",
+      "anonymizedNotice": "Dane osobowe tego pacjenta zostały zanonimizowane.",
+      "anonymizeDone": "Dane pacjenta zanonimizowane."
+    },
+    "notes": {
+      "title": "Notatki wewnętrzne",
+      "addTitle": "Dodaj notatkę",
+      "placeholder": "Wpisz notatkę wewnętrzną…",
+      "warning": "Notatka wewnętrzna. Nie używaj tego pola jako pełnej dokumentacji medycznej, jeśli system nie został skonfigurowany i zweryfikowany prawnie do prowadzenia dokumentacji medycznej.",
+      "add": "Dodaj notatkę",
+      "adding": "Dodawanie…",
+      "saved": "Notatka zapisana.",
+      "empty": "Brak notatek.",
+      "forVisit": "Powiązana z wizytą",
+      "copyVisit": "Kopiuj podsumowanie wizyty",
+      "copied": "Skopiowano"
+    },
+    "export": {
+      "from": "Od",
+      "to": "Do",
+      "submit": "Pobierz CSV"
+    },
+    "errors": {
+      "required": "To pole jest wymagane.",
+      "invalidEmail": "Podaj prawidłowy adres e-mail.",
+      "invalidDate": "Podaj prawidłową datę.",
+      "invalidRange": "Data końcowa musi być taka sama lub późniejsza niż początkowa.",
+      "invalidTime": "Podaj prawidłową godzinę.",
+      "endBeforeStart": "Godzina zakończenia musi być późniejsza niż rozpoczęcia.",
+      "tooLong": "Ta wartość jest za długa.",
+      "slotUnavailable": "Ten termin nakłada się na inną wizytę. Wybierz inny.",
+      "notConfigured": "Rezerwacje nie są jeszcze skonfigurowane.",
+      "confirmRequired": "Potwierdź, aby kontynuować.",
+      "patientHasFutureAppointments": "Ten pacjent ma nadchodzące zarezerwowane wizyty. Najpierw je odwołaj lub oznacz jako odbyte.",
+      "alreadyAnonymized": "Ten pacjent został już zanonimizowany.",
+      "unexpected": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
+  "privacy": {
+    "title": "Polityka prywatności",
+    "lastUpdated": "Wersja {version}",
+    "intro": "Ta polityka wyjaśnia, w jaki sposób przetwarzane są Twoje dane osobowe podczas umawiania wizyty za pośrednictwem tej strony.",
+    "sections": {
+      "controller": {
+        "title": "Kto odpowiada za dane",
+        "body": "Administratorem Twoich danych osobowych jest gabinet, w którym umawiasz wizytę. Jego pełną tożsamość i dane kontaktowe udostępnia gabinet."
+      },
+      "dataProcessed": {
+        "title": "Jakie dane przetwarzamy",
+        "body": "Przetwarzamy dane, które podajesz w celu umówienia wizyty: imię, nazwisko, numer telefonu, adres e-mail oraz krótką notatkę, jeśli ją dodasz. Przechowujemy także terminy wizyt i ich status."
+      },
+      "purpose": {
+        "title": "W jakim celu",
+        "body": "Twoje dane służą do planowania, potwierdzania, obsługi i odwoływania wizyty oraz do kontaktu z Tobą w jej sprawie."
+      },
+      "legalBasis": {
+        "title": "Podstawa prawna",
+        "body": "Przetwarzamy Twoje dane na podstawie Twojej zgody oraz w celu podjęcia działań związanych z świadczeniem usługi, o którą prosisz. Zgodę możesz wycofać w dowolnym momencie, co nie wpływa na przetwarzanie dokonane wcześniej."
+      },
+      "recipients": {
+        "title": "Kto ma dostęp do danych",
+        "body": "Dostęp do Twoich danych ma personel gabinetu. Mogą być one przetwarzane przez dostawców usług technicznych (np. hosting i wysyłka e-mail) działających w imieniu gabinetu. Nie sprzedajemy Twoich danych."
+      },
+      "retention": {
+        "title": "Jak długo przechowujemy dane",
+        "body": "Przechowujemy Twoje dane tak długo, jak to konieczne do obsługi relacji oraz spełnienia obowiązków prawnych. Po określonym okresie braku aktywności Twoje dane kontaktowe są anonimizowane."
+      },
+      "rights": {
+        "title": "Twoje prawa",
+        "body": "Masz prawo dostępu do danych, ich sprostowania, usunięcia i otrzymania kopii, a także sprzeciwu wobec przetwarzania lub jego ograniczenia. Aby skorzystać z tych praw, skontaktuj się z gabinetem."
+      },
+      "voluntary": {
+        "title": "Czy podanie danych jest wymagane",
+        "body": "Podanie danych kontaktowych jest niezbędne do umówienia i obsługi wizyty. Notatka jest opcjonalna i dobrowolna; prosimy nie podawać w niej wrażliwych informacji medycznych."
+      },
+      "security": {
+        "title": "Bezpieczeństwo",
+        "body": "Stosujemy odpowiednie środki techniczne i organizacyjne, aby chronić Twoje dane. Linki do odwołania wizyty są przechowywane wyłącznie w postaci skrótów, a wrażliwe operacje są rejestrowane."
+      }
+    },
+    "contactNotice": "Gabinet podaje swoją pełną tożsamość, dane kontaktowe oraz informacje o organie nadzorczym zgodnie z obowiązującym prawem.",
+    "backHome": "Powrót do strony głównej",
+    "bookCta": "Umów wizytę"
+  },
+  "emails": {
+    "bookingConfirmation": {
+      "subject": "Potwierdzenie wizyty – {clinic}",
+      "greeting": "Dzień dobry,",
+      "body": "Twoja wizyta u {doctor} została potwierdzona na {datetime}.",
+      "cancelIntro": "Jeśli chcesz odwołać wizytę, skorzystaj z poniższego linku:",
+      "signature": "{clinic}"
+    },
+    "cancellationConfirmation": {
+      "subject": "Wizyta odwołana – {clinic}",
+      "greeting": "Dzień dobry,",
+      "body": "Twoja wizyta u {doctor} w dniu {datetime} została odwołana.",
+      "rebookIntro": "Chcesz umówić inny termin? Skorzystaj z poniższego linku:",
+      "signature": "{clinic}"
+    }
+  }
+}

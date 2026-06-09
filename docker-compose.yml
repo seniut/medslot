@@ -1,0 +1,29 @@
+# Local PostgreSQL for development and the integration test suite.
+#
+# Start it with:
+#   docker compose up -d
+#
+# Credentials/port match the local DATABASE_URL in `.env.example`
+# (postgres:postgres @ localhost:5432, database `medslot`). The integration
+# tests connect to the derived `medslot_test` database, which Prisma creates
+# automatically on first run via `prisma migrate deploy`.
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: medslot
+    ports:
+      - "5432:5432"
+    volumes:
+      - medslot-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d medslot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  medslot-pg-data:

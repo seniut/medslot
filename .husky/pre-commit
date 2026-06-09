@@ -1,0 +1,16 @@
+# MedSlot pre-commit hook.
+#
+# 1. lint-staged: auto-format and lint only the staged files (fast).
+# 2. typecheck: project-wide TypeScript check (catches cross-file breakage).
+# 3. test: the FULL suite — unit AND integration.
+#
+# Integration tests run against a local Postgres. If it is not reachable they
+# are skipped automatically (not failed), so a commit still succeeds without it.
+# To actually run them, start the database first:
+#   docker compose up -d
+#
+# In a genuine emergency you can skip all of these checks with:
+#   git commit --no-verify
+pnpm lint-staged
+pnpm typecheck
+pnpm test
