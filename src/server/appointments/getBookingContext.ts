@@ -1,5 +1,5 @@
-import { prisma } from "@/db/prisma";
 import { BOOKING_DEFAULTS } from "@/lib/booking-config";
+import { getActiveClinic } from "@/server/clinic/getActiveClinic";
 
 export type BookingContext = {
   clinicId: string;
@@ -12,27 +12,25 @@ export type BookingContext = {
 /**
  * Load the clinic/doctor that accepts public bookings.
  *
- * MVP is single-doctor, so we use the earliest-created doctor and its clinic.
- * Returns null when no doctor is configured yet.
+ * Tenant resolution is delegated to `getActiveClinic` (the single place that
+ * decides which clinic a public request maps to). Returns null when no clinic
+ * or doctor is configured yet.
  */
 export async function getBookingContext(): Promise<BookingContext | null> {
-  const doctor = await prisma.doctor.findFirst({
-    orderBy: { createdAt: "asc" },
-    include: { clinic: true },
-  });
+  const clinic = await getActiveClinic();
 
-  if (!doctor) {
+  if (!clinic || !clinic.doctor) {
     return null;
   }
 
   return {
-    clinicId: doctor.clinicId,
-    clinicName: doctor.clinic.name,
-    doctorId: doctor.id,
-    doctorName: doctor.displayName,
+    clinicId: clinic.id,
+    clinicName: clinic.name,
+    doctorId: clinic.doctor.id,
+    doctorName: clinic.doctor.displayName,
     timeZone:
-      doctor.timezone ||
-      doctor.clinic.timezone ||
+      clinic.doctor.timezone ||
+      clinic.timezone ||
       BOOKING_DEFAULTS.fallbackTimeZone,
   };
 }

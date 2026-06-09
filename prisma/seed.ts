@@ -22,6 +22,12 @@ const CLINIC_NAME = (process.env.CLINIC_NAME ?? "MedSlot Demo Clinic").trim();
 const CLINIC_SLUG = (process.env.CLINIC_SLUG ?? "demo-clinic").trim();
 const CLINIC_TIMEZONE = (process.env.CLINIC_TIMEZONE ?? "Europe/Warsaw").trim();
 
+// Public contact details shown on the landing page. Optional: when a variable
+// is unset (or empty) the corresponding row is simply hidden on the site.
+const CLINIC_PHONE = process.env.CLINIC_PHONE?.trim() || undefined;
+const CLINIC_EMAIL = process.env.CLINIC_EMAIL?.trim().toLowerCase() || undefined;
+const CLINIC_ADDRESS = process.env.CLINIC_ADDRESS?.trim() || undefined;
+
 const SUPPORTED_LOCALES = ["pl", "en"] as const;
 const requestedLocale = (process.env.DEFAULT_LOCALE ?? "pl").trim().toLowerCase();
 const DEFAULT_LOCALE = (
@@ -49,14 +55,28 @@ const ADMIN_EMAIL = (process.env.ADMIN_EMAIL ?? "admin@example.com")
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "medslot-admin";
 
 async function main() {
+  // The clinic profile is env-driven, so re-running the seed refreshes the
+  // configurable fields (name, locale, timezone, public contact details) from
+  // the environment. Contact fields left unset in the environment are not
+  // touched here.
   const clinic = await prisma.clinic.upsert({
     where: { slug: CLINIC_SLUG },
-    update: {},
+    update: {
+      name: CLINIC_NAME,
+      defaultLocale: DEFAULT_LOCALE,
+      timezone: CLINIC_TIMEZONE,
+      phone: CLINIC_PHONE,
+      email: CLINIC_EMAIL,
+      address: CLINIC_ADDRESS,
+    },
     create: {
       name: CLINIC_NAME,
       slug: CLINIC_SLUG,
       defaultLocale: DEFAULT_LOCALE,
       timezone: CLINIC_TIMEZONE,
+      phone: CLINIC_PHONE,
+      email: CLINIC_EMAIL,
+      address: CLINIC_ADDRESS,
     },
   });
 

@@ -21,6 +21,9 @@ export async function createClinic(
     slug: string;
     defaultLocale: string;
     timezone: string;
+    phone: string | null;
+    email: string | null;
+    address: string | null;
   }> = {},
 ) {
   const suffix = uniqueSuffix();
@@ -30,6 +33,9 @@ export async function createClinic(
       slug: overrides.slug ?? `test-clinic-${suffix}`,
       defaultLocale: overrides.defaultLocale ?? "pl",
       timezone: overrides.timezone ?? "Europe/Warsaw",
+      phone: overrides.phone ?? null,
+      email: overrides.email ?? null,
+      address: overrides.address ?? null,
     },
   });
 }

@@ -4,11 +4,16 @@
     "privacyPolicy": "Polityka prywatności"
   },
   "home": {
-    "title": "MedSlot",
-    "tagline": "Prosty kalendarz wizyt dla specjalistów ochrony zdrowia.",
-    "description": "Pacjenci rezerwują i odwołują wizyty online. Lekarz zarządza kalendarzem, historią wizyt i notatkami wewnętrznymi.",
-    "bootstrapNotice": "Szkielet projektu (Milestone 0). Funkcje rezerwacji pojawią się w kolejnych etapach.",
-    "bookCta": "Umów wizytę"
+    "services": "Fizjoterapia • Rehabilitacja • Masaż",
+    "tagline": "Gabinet fizjoterapii i rehabilitacji.",
+    "description": "Zarezerwuj wizytę online — szybko i wygodnie, bez dzwonienia. Specjalista: {doctor}.",
+    "descriptionGeneric": "Zarezerwuj wizytę online — szybko i wygodnie, bez dzwonienia.",
+    "bookCta": "Umów wizytę",
+    "contactTitle": "Kontakt",
+    "contactPhoneLabel": "Telefon",
+    "contactEmailLabel": "E-mail",
+    "contactAddressLabel": "Adres",
+    "poweredBy": "powered by MedSlot"
   },
   "booking": {
     "title": "Umów wizytę",

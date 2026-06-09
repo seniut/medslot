@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+# .env.vercel holds real production secrets for Vercel upload — never commit it
+# (already covered by .env* above; listed explicitly for clarity).
+.env.vercel
 
 # vercel
 .vercel

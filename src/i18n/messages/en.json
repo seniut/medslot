@@ -4,11 +4,16 @@
     "privacyPolicy": "Privacy policy"
   },
   "home": {
-    "title": "MedSlot",
-    "tagline": "A simple appointment calendar for healthcare professionals.",
-    "description": "Patients book and cancel visits online. The doctor manages the calendar, visit history, and internal notes.",
-    "bootstrapNotice": "Project scaffold (Milestone 0). Booking features will arrive in later milestones.",
-    "bookCta": "Book an appointment"
+    "services": "Physiotherapy • Rehabilitation • Massage",
+    "tagline": "Physiotherapy and rehabilitation practice.",
+    "description": "Book your visit online — fast and easy, no phone calls. Your specialist: {doctor}.",
+    "descriptionGeneric": "Book your visit online — fast and easy, no phone calls.",
+    "bookCta": "Book an appointment",
+    "contactTitle": "Contact",
+    "contactPhoneLabel": "Phone",
+    "contactEmailLabel": "Email",
+    "contactAddressLabel": "Address",
+    "poweredBy": "powered by MedSlot"
   },
   "booking": {
     "title": "Book an appointment",

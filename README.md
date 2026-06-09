@@ -161,6 +161,7 @@ not as:
 - `docs/09-ai-workflow-prompts.md` — prompts for Copilot/Codex and how to continue work in VS Code.
 - `docs/10-feature-backlog.md` — future feature ideas.
 - `docs/11-database-access.md` — connecting to the database (local + Neon/production) and example queries.
+- `docs/12-multi-tenancy.md` — scaling from one clinic to many clinics on one platform.
 - `.github/copilot-instructions.md` — GitHub Copilot repository-wide instructions.
 - `AGENTS.md` — Codex repository instructions.
 - `PLANS.md` — milestone execution plan.

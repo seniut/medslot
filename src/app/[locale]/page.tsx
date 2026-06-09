@@ -1,41 +1,122 @@
-import { use } from "react";
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { getClinicProfile } from "@/server/clinic/getClinicProfile";
+
+// The landing page renders the configured clinic profile (name, doctor, and
+// public contact details) from the database, so it is rendered per request
+// rather than statically prerendered at build time.
+export const dynamic = "force-dynamic";
 
 type HomePageProps = {
   params: Promise<{ locale: string }>;
 };
 
-export default function HomePage({ params }: HomePageProps) {
-  const { locale } = use(params);
+export default async function HomePage({ params }: HomePageProps) {
+  const { locale } = await params;
   setRequestLocale(locale);
-  const t = useTranslations("home");
-  const tCommon = useTranslations("common");
+
+  const t = await getTranslations("home");
+  const tCommon = await getTranslations("common");
+  const clinic = await getClinicProfile();
+
+  const clinicName = clinic?.name ?? tCommon("appName");
+  const doctorName = clinic?.doctorName ?? null;
+  const phone = clinic?.phone ?? null;
+  const email = clinic?.email ?? null;
+  const address = clinic?.address ?? null;
+  const hasContact = Boolean(phone || email || address);
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-6 px-6 py-16">
-      <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-sm font-medium">
-          MedSlot
+    <main className="flex w-full flex-1 flex-col">
+      <header className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-6">
+        <span className="text-lg font-semibold tracking-tight text-teal-700">
+          {clinicName}
         </span>
         <LocaleSwitcher />
-      </div>
-      <h1 className="text-3xl font-semibold tracking-tight">{t("title")}</h1>
-      <p className="text-muted-foreground text-lg">{t("tagline")}</p>
-      <p className="text-muted-foreground text-sm">{t("description")}</p>
-      <div>
-        <Button asChild>
-          <Link href="/booking">{t("bookCta")}</Link>
-        </Button>
-      </div>
-      <p className="text-muted-foreground text-sm">
-        <Link href="/privacy" className="underline">
+      </header>
+
+      <section className="from-teal-50 to-background bg-linear-to-b">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-6 py-16">
+          <p className="text-sm font-semibold tracking-wide text-teal-700 uppercase">
+            {t("services")}
+          </p>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            {clinicName}
+          </h1>
+          <p className="text-muted-foreground text-lg">{t("tagline")}</p>
+          <p className="text-muted-foreground max-w-xl">
+            {doctorName
+              ? t("description", { doctor: doctorName })
+              : t("descriptionGeneric")}
+          </p>
+          <div className="pt-2">
+            <Button asChild size="lg">
+              <Link href="/booking">{t("bookCta")}</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {hasContact ? (
+        <section className="mx-auto w-full max-w-3xl px-6 py-12">
+          <div className="bg-card rounded-xl border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold">{t("contactTitle")}</h2>
+            <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-3">
+              {phone ? (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-muted-foreground">
+                    {t("contactPhoneLabel")}
+                  </dt>
+                  <dd>
+                    <a
+                      href={`tel:${phone.replace(/\s+/g, "")}`}
+                      className="font-medium text-teal-700 hover:underline"
+                    >
+                      {phone}
+                    </a>
+                  </dd>
+                </div>
+              ) : null}
+              {email ? (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-muted-foreground">
+                    {t("contactEmailLabel")}
+                  </dt>
+                  <dd>
+                    <a
+                      href={`mailto:${email}`}
+                      className="font-medium text-teal-700 hover:underline"
+                    >
+                      {email}
+                    </a>
+                  </dd>
+                </div>
+              ) : null}
+              {address ? (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-muted-foreground">
+                    {t("contactAddressLabel")}
+                  </dt>
+                  <dd className="font-medium">{address}</dd>
+                </div>
+              ) : null}
+            </dl>
+          </div>
+        </section>
+      ) : null}
+
+      <footer className="mx-auto mt-auto flex w-full max-w-3xl flex-col gap-2 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
+        <Link
+          href="/privacy"
+          className="text-muted-foreground text-sm underline"
+        >
           {tCommon("privacyPolicy")}
         </Link>
-      </p>
+        <span className="text-muted-foreground text-xs">{t("poweredBy")}</span>
+      </footer>
     </main>
   );
 }

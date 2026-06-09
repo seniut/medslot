@@ -297,6 +297,8 @@ development defaults, so the same script seeds a real deployment:
 - Clinic/doctor: `CLINIC_NAME`, `CLINIC_SLUG`, `CLINIC_TIMEZONE`, `DEFAULT_LOCALE`,
   `DOCTOR_DISPLAY_NAME`, `DOCTOR_EMAIL`, and optional `DOCTOR_TIMEZONE` (defaults
   to `CLINIC_TIMEZONE`).
+- Public contact (optional): `CLINIC_PHONE`, `CLINIC_EMAIL`, `CLINIC_ADDRESS` are
+  shown on the landing page; leave any of them empty to hide that row.
 - Admin user: `ADMIN_EMAIL` / `ADMIN_PASSWORD` (development defaults:
   `admin@example.com` / `medslot-admin`).
 
@@ -401,6 +403,7 @@ Open PR.
    - `EMAIL_FROM`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` (when `EMAIL_PROVIDER=smtp`)
    - `ADMIN_EMAIL` / `ADMIN_PASSWORD` (only if you run `db:seed` to create the first admin; set strong values)
    - `CLINIC_NAME`, `CLINIC_SLUG`, `CLINIC_TIMEZONE`, `DOCTOR_DISPLAY_NAME`, `DOCTOR_EMAIL` (only if you run `db:seed`; set real clinic/doctor values)
+   - `CLINIC_PHONE`, `CLINIC_EMAIL`, `CLINIC_ADDRESS` (optional public contact shown on the landing page; only used by `db:seed`)
 5. Deploy.
 
 ## 16. Production migrations
@@ -531,6 +534,7 @@ From your machine, with the **production** values exported (do NOT commit them):
 DATABASE_URL="<neon-pooled>" DIRECT_URL="<neon-direct>" pnpm prisma migrate deploy
 DATABASE_URL="<neon-pooled>" DIRECT_URL="<neon-direct>" \
   CLINIC_NAME="..." CLINIC_SLUG="..." CLINIC_TIMEZONE="Europe/Warsaw" \
+  CLINIC_PHONE="..." CLINIC_EMAIL="..." CLINIC_ADDRESS="..." \
   DOCTOR_DISPLAY_NAME="..." DOCTOR_EMAIL="..." \
   ADMIN_EMAIL="..." ADMIN_PASSWORD="..." pnpm db:seed
 ```

@@ -227,3 +227,31 @@ Reason and key choices:
   Postgres is down, and `git commit --no-verify` is the documented emergency
   bypass.
 
+## Decision 013 — Single-tenant now, multi-tenant by changing one resolver
+
+Status: Accepted
+
+The MVP runs one clinic per deployment, but the data model is already
+multi-tenant (every table carries `clinicId`; `Clinic` is the tenant). To keep
+the upgrade path open without over-building now, the "which clinic is this public
+request for?" decision lives in a single function,
+`src/server/clinic/getActiveClinic.ts`. The public read models
+(`getClinicProfile`, `getBookingContext`) and the landing page are built on top
+of it.
+
+Reason and key choices:
+
+- Clinic identity and contact details are **data**, not code: `Clinic.name`,
+  `Doctor.displayName`, and `Clinic.phone/email/address` come from the database
+  (seeded from env), so a second clinic needs data, not a second deployment.
+  Only generic, translatable UI labels stay in the i18n catalogs.
+- Centralizing tenant resolution means the move to many clinics on one
+  deployment changes essentially one function — resolve the clinic by URL slug
+  (`/[clinic]/...`) or hostname instead of returning the first clinic — because
+  every public read model already depends on it.
+- All domain queries are already scoped by `clinicId`, and admin sessions
+  re-load the clinic per request, so per-tenant isolation is enforced today.
+- The full approach, trade-offs (one-deploy-per-clinic vs shared multi-tenant),
+  and a migration checklist are documented in `docs/12-multi-tenancy.md`.
+
+

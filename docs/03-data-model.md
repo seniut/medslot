@@ -23,6 +23,9 @@ Fields:
 - `slug`
 - `defaultLocale`
 - `timezone`
+- `phone` (optional; public contact shown on the landing page)
+- `email` (optional; public contact shown on the landing page)
+- `address` (optional; public contact shown on the landing page)
 - `createdAt`
 - `updatedAt`
 
@@ -254,6 +257,9 @@ model Clinic {
   slug          String   @unique
   defaultLocale String   @default("pl")
   timezone      String   @default("Europe/Warsaw")
+  phone         String?
+  email         String?
+  address       String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
