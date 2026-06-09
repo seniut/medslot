@@ -31,9 +31,6 @@ export default function HomePage({ params }: HomePageProps) {
           <Link href="/booking">{t("bookCta")}</Link>
         </Button>
       </div>
-      <p className="text-muted-foreground rounded-md border border-dashed p-3 text-sm">
-        {t("bootstrapNotice")}
-      </p>
       <p className="text-muted-foreground text-sm">
         <Link href="/privacy" className="underline">
           {tCommon("privacyPolicy")}
