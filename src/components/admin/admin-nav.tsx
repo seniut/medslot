@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { MedSlotLogo } from "@/components/medslot-logo";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { logoutAction } from "@/server/auth/authActions";
@@ -17,7 +18,10 @@ export async function AdminNav({ locale, email }: AdminNavProps) {
     <header className="border-b">
       <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-6 py-3">
         <div className="flex items-center gap-4">
-          <span className="text-sm font-semibold">{t("brand")}</span>
+          <span className="flex items-center gap-2 text-sm font-semibold">
+            <MedSlotLogo className="h-5 w-5" title="" />
+            {t("brand")}
+          </span>
           <nav className="flex items-center gap-3 text-sm">
             <Link
               href="/admin/calendar"

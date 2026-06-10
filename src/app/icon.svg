@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MedSlot">
+  <title>MedSlot</title>
+  <defs>
+    <linearGradient id="medslot-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf" />
+      <stop offset="1" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#medslot-bg)" />
+  <rect x="170" y="96" width="30" height="72" rx="15" fill="#ffffff" />
+  <rect x="312" y="96" width="30" height="72" rx="15" fill="#ffffff" />
+  <rect x="108" y="140" width="296" height="272" rx="44" fill="#ffffff" />
+  <path d="M152 140 H360 A44 44 0 0 1 404 184 V200 H108 V184 A44 44 0 0 1 152 140 Z" fill="#0f766e" />
+  <rect x="228" y="231" width="56" height="150" rx="20" fill="#0f766e" />
+  <rect x="181" y="278" width="150" height="56" rx="20" fill="#0f766e" />
+</svg>

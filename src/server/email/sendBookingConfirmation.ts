@@ -4,6 +4,7 @@ import type { Locale } from "@/i18n/routing";
 import { formatInTimeZone } from "@/lib/date-time/timezone";
 
 import { getEmailAdapter } from "./adapter";
+import { renderBrandedEmailHtml } from "./emailLayout";
 
 export type BookingConfirmationParams = {
   to: string;
@@ -32,10 +33,15 @@ export async function sendBookingConfirmation(
       namespace: "emails.bookingConfirmation",
     });
 
-    const when = formatInTimeZone(params.startsAt, params.locale, params.timeZone, {
-      dateStyle: "long",
-      timeStyle: "short",
-    });
+    const when = formatInTimeZone(
+      params.startsAt,
+      params.locale,
+      params.timeZone,
+      {
+        dateStyle: "long",
+        timeStyle: "short",
+      },
+    );
 
     const subject = t("subject", { clinic: params.clinicName });
     const lines = [
@@ -49,13 +55,7 @@ export async function sendBookingConfirmation(
       t("signature", { clinic: params.clinicName }),
     ];
     const text = lines.join("\n");
-    const html = lines
-      .map((line) =>
-        line === ""
-          ? "<br/>"
-          : `<p>${line.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>`,
-      )
-      .join("");
+    const html = renderBrandedEmailHtml(lines);
 
     await getEmailAdapter().send({ to: params.to, subject, text, html });
   } catch {

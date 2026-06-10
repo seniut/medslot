@@ -4,6 +4,7 @@ import type { Locale } from "@/i18n/routing";
 import { formatInTimeZone } from "@/lib/date-time/timezone";
 
 import { getEmailAdapter } from "./adapter";
+import { renderBrandedEmailHtml } from "./emailLayout";
 
 export type AppointmentRescheduledEmailParams = {
   to: string;
@@ -66,13 +67,7 @@ export async function sendAppointmentRescheduledEmail(
       t("signature", { clinic: params.clinicName }),
     ];
     const text = lines.join("\n");
-    const html = lines
-      .map((line) =>
-        line === ""
-          ? "<br/>"
-          : `<p>${line.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>`,
-      )
-      .join("");
+    const html = renderBrandedEmailHtml(lines);
 
     await getEmailAdapter().send({ to: params.to, subject, text, html });
   } catch {

@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { MedSlotLogo } from "@/components/medslot-logo";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { getClinicProfile } from "@/server/clinic/getClinicProfile";
@@ -38,7 +39,7 @@ export default async function HomePage({ params }: HomePageProps) {
         <LocaleSwitcher />
       </header>
 
-      <section className="from-teal-50 to-background bg-linear-to-b">
+      <section className="to-background bg-linear-to-b from-teal-50">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-6 py-16">
           <p className="text-sm font-semibold tracking-wide text-teal-700 uppercase">
             {t("services")}
@@ -115,7 +116,10 @@ export default async function HomePage({ params }: HomePageProps) {
         >
           {tCommon("privacyPolicy")}
         </Link>
-        <span className="text-muted-foreground text-xs">{t("poweredBy")}</span>
+        <span className="text-muted-foreground inline-flex items-center gap-1.5 text-xs">
+          <MedSlotLogo className="h-4 w-4" title="" />
+          {t("poweredBy")}
+        </span>
       </footer>
     </main>
   );
