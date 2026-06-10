@@ -4,6 +4,7 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { CopyButton } from "@/components/admin/copy-button";
 import { NoteForm } from "@/components/admin/note-form";
 import { RescheduleForm } from "@/components/admin/reschedule-form";
+import { PhoneLink } from "@/components/phone-link";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { formatInTimeZone, zonedDateTimeParts } from "@/lib/date-time/timezone";
@@ -78,7 +79,9 @@ export default async function AppointmentDetailPage({
               <Row label={t("appointment.patient")}>
                 {detail.patientFirstName} {detail.patientLastName}
               </Row>
-              <Row label={t("appointment.phone")}>{detail.patientPhone}</Row>
+              <Row label={t("appointment.phone")}>
+                <PhoneLink phone={detail.patientPhone} />
+              </Row>
               <Row label={t("appointment.email")}>
                 {detail.patientEmail || "—"}
               </Row>

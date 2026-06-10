@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { MedSlotLogo } from "@/components/medslot-logo";
+import { PhoneLink } from "@/components/phone-link";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { getClinicProfile } from "@/server/clinic/getClinicProfile";
@@ -72,12 +73,10 @@ export default async function HomePage({ params }: HomePageProps) {
                     {t("contactPhoneLabel")}
                   </dt>
                   <dd>
-                    <a
-                      href={`tel:${phone.replace(/\s+/g, "")}`}
+                    <PhoneLink
+                      phone={phone}
                       className="font-medium text-teal-700 hover:underline"
-                    >
-                      {phone}
-                    </a>
+                    />
                   </dd>
                 </div>
               ) : null}

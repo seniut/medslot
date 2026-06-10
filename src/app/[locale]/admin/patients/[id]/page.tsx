@@ -6,6 +6,7 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { AnonymizePatientForm } from "@/components/admin/anonymize-patient-form";
 import { CopyButton } from "@/components/admin/copy-button";
 import { NoteForm } from "@/components/admin/note-form";
+import { PhoneLink } from "@/components/phone-link";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { formatInTimeZone } from "@/lib/date-time/timezone";
@@ -94,7 +95,9 @@ export default async function PatientDetailPage({
             </div>
 
             <dl className="grid gap-4 rounded-md border p-4 sm:grid-cols-2">
-              <Row label={t("phone")}>{patient.phone}</Row>
+              <Row label={t("phone")}>
+                <PhoneLink phone={patient.phone} />
+              </Row>
               <Row label={t("email")}>{patient.email || "—"}</Row>
             </dl>
 
@@ -142,10 +145,7 @@ export default async function PatientDetailPage({
               ) : (
                 <ul className="space-y-2">
                   {patient.notes.map((note) => (
-                    <li
-                      key={note.id}
-                      className="rounded-md border p-3 text-sm"
-                    >
+                    <li key={note.id} className="rounded-md border p-3 text-sm">
                       <p className="whitespace-pre-wrap">{note.content}</p>
                       <p className="text-muted-foreground mt-1 text-xs">
                         {formatInTimeZone(note.createdAt, locale, timeZone, {
@@ -170,10 +170,7 @@ export default async function PatientDetailPage({
               </p>
               <div className="space-y-4 rounded-md border p-4">
                 <Button asChild variant="outline">
-                  <a
-                    href={`/api/admin/patients/${patient.id}/export`}
-                    download
-                  >
+                  <a href={`/api/admin/patients/${patient.id}/export`} download>
                     {t("exportData")}
                   </a>
                 </Button>
