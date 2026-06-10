@@ -100,7 +100,18 @@ export default async function HomePage({ params }: HomePageProps) {
                   <dt className="text-muted-foreground">
                     {t("contactAddressLabel")}
                   </dt>
-                  <dd className="font-medium">{address}</dd>
+                  <dd>
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                        `${clinicName}, ${address}`,
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-teal-700 hover:underline"
+                    >
+                      {address}
+                    </a>
+                  </dd>
                 </div>
               ) : null}
             </dl>
