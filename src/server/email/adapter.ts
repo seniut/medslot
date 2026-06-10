@@ -5,6 +5,11 @@
 // - "smtp": sends via any SMTP server (e.g. Gmail) using nodemailer.
 // - "resend": reserved for later (requires a verified sending domain).
 //
+// EMAIL_OVERRIDE_TO (optional): when set, every outgoing message is redirected
+// to that single address regardless of the real recipient, with the original
+// recipient preserved in the subject. Intended for staging/manual verification
+// so an operator can see exactly what every flow sends. Unset to disable.
+//
 // Privacy: adapters must never log recipients, subjects, bodies, or links —
 // cancellation links contain a one-time token.
 
@@ -93,9 +98,55 @@ function createEmailAdapter(): EmailAdapter {
   }
 
   if (provider !== "log") {
-    console.warn(`[email] unknown EMAIL_PROVIDER "${provider}"; using log adapter`);
+    console.warn(
+      `[email] unknown EMAIL_PROVIDER "${provider}"; using log adapter`,
+    );
   }
   return new LogEmailAdapter();
+}
+
+/**
+ * Redirect a message to a single override address while keeping the original
+ * recipient visible in the subject (e.g. "[→ patient@x] Appointment confirmed").
+ * Pure helper so the rewrite is unit-testable in isolation.
+ */
+export function redirectMessage(
+  message: EmailMessage,
+  overrideTo: string,
+): EmailMessage {
+  return {
+    ...message,
+    to: overrideTo,
+    subject: `[→ ${message.to}] ${message.subject}`,
+  };
+}
+
+/**
+ * Wrap another adapter so every message is delivered to a single address
+ * (EMAIL_OVERRIDE_TO). For staging/manual verification only.
+ */
+export class OverrideRecipientAdapter implements EmailAdapter {
+  constructor(
+    private readonly inner: EmailAdapter,
+    private readonly overrideTo: string,
+  ) {}
+
+  async send(message: EmailMessage): Promise<void> {
+    await this.inner.send(redirectMessage(message, this.overrideTo));
+  }
+}
+
+function createConfiguredAdapter(): EmailAdapter {
+  const base = createEmailAdapter();
+  const overrideTo = process.env.EMAIL_OVERRIDE_TO?.trim();
+  if (overrideTo) {
+    // No recipient is logged; this only flags that redirection is active.
+    console.warn(
+      "[email] EMAIL_OVERRIDE_TO is set; all outgoing email is redirected to a single address",
+    );
+    return new OverrideRecipientAdapter(base, overrideTo);
+  }
+  return base;
 }
 
 let cachedAdapter: EmailAdapter | null = null;
@@ -103,7 +154,7 @@ let cachedAdapter: EmailAdapter | null = null;
 /** Return the configured email adapter (selected by EMAIL_PROVIDER). */
 export function getEmailAdapter(): EmailAdapter {
   if (!cachedAdapter) {
-    cachedAdapter = createEmailAdapter();
+    cachedAdapter = createConfiguredAdapter();
   }
   return cachedAdapter;
 }

@@ -160,6 +160,22 @@ export function formatInTimeZone(
 }
 
 /**
+ * Wall-clock calendar date ("YYYY-MM-DD") and time ("HH:mm") of an absolute
+ * instant in the given timezone. The inverse of `zonedWallTimeToUtc` for the
+ * fields a date/time form needs, e.g. to pre-fill a reschedule form.
+ */
+export function zonedDateTimeParts(
+  timeZone: string,
+  date: Date,
+): { date: string; time: string } {
+  const parts = getTimeZoneParts(timeZone, date);
+  return {
+    date: `${parts.year}-${pad2(parts.month)}-${pad2(parts.day)}`,
+    time: `${pad2(parts.hour)}:${pad2(parts.minute)}`,
+  };
+}
+
+/**
  * Shift an ISO calendar date ("YYYY-MM-DD") by a whole number of days.
  * Pure calendar math, independent of any timezone.
  */

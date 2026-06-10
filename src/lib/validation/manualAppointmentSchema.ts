@@ -16,6 +16,9 @@ export const manualAppointmentSchema = z.object({
   phone: z.string().trim().min(3, "required").max(40, "tooLong"),
   email: z.email("invalidEmail").max(254, "tooLong").optional(),
   message: z.string().trim().max(1000, "tooLong").optional(),
+  // When true and an email is present, the patient is emailed a confirmation
+  // (with a cancellation link). Ignored when no email is provided.
+  notifyPatient: z.boolean().optional(),
 });
 
 export type ManualAppointmentInput = z.infer<typeof manualAppointmentSchema>;

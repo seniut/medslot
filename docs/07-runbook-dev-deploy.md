@@ -401,6 +401,8 @@ Open PR.
    - `NEXT_PUBLIC_APP_URL` (your deployed URL; cancellation links use it)
    - `EMAIL_PROVIDER` (`log` to send nothing, or `smtp` for real email)
    - `EMAIL_FROM`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` (when `EMAIL_PROVIDER=smtp`)
+   - `DOCTOR_NOTIFICATION_EMAIL` (optional; recipient of the new-booking alert — falls back to `DOCTOR_EMAIL` when unset)
+   - `EMAIL_OVERRIDE_TO` (optional; redirects ALL outgoing email to one address for staging/manual checks — leave UNSET in normal production)
    - `ADMIN_EMAIL` / `ADMIN_PASSWORD` (only if you run `db:seed` to create the first admin; set strong values)
    - `CLINIC_NAME`, `CLINIC_SLUG`, `CLINIC_TIMEZONE`, `DOCTOR_DISPLAY_NAME`, `DOCTOR_EMAIL` (only if you run `db:seed`; set real clinic/doctor values)
    - `CLINIC_PHONE`, `CLINIC_EMAIL`, `CLINIC_ADDRESS` (optional public contact shown on the landing page; only used by `db:seed`)

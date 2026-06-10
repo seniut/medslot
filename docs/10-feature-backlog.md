@@ -37,6 +37,8 @@ Lower cost than SMS.
 
 Patient can move appointment instead of cancelling.
 
+Note: admin-side reschedule (the doctor moves a booked appointment, with an email notice to the patient) is already implemented; this item now covers patient self-service rescheduling.
+
 ### Service types
 
 Doctor can configure:

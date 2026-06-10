@@ -36,6 +36,7 @@
 - SMS reminders.
 - Email reminders 24h before visit.
 - Reschedule link.
+  - Admin-side reschedule (doctor moves an appointment) is shipped; patient self-service reschedule remains post-MVP.
 - Doctor can define multiple appointment durations.
 - Services list with price/duration.
 - Better blocked time recurrence.

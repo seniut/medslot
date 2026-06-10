@@ -27,7 +27,11 @@ export type CreateAppointmentResult = {
   /** Raw cancellation token for the confirmation email link only. */
   cancellationToken: string;
   doctorName: string;
+  /** Doctor's own email — default target for the new-booking notification. */
+  doctorEmail: string;
   clinicName: string;
+  /** Clinic default locale — used for the doctor-facing notification. */
+  defaultLocale: string;
   timeZone: string;
 };
 
@@ -137,7 +141,9 @@ export async function createAppointment(
       endsAt,
       cancellationToken: token,
       doctorName: context.doctorName,
+      doctorEmail: context.doctorEmail,
       clinicName: context.clinicName,
+      defaultLocale: context.defaultLocale,
       timeZone: context.timeZone,
     };
   } catch (error) {

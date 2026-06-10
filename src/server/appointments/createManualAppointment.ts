@@ -1,6 +1,8 @@
 import { prisma } from "@/db/prisma";
 import { BOOKING_DEFAULTS } from "@/lib/booking-config";
 import { zonedWallTimeToUtc } from "@/lib/date-time/timezone";
+import { generateCancellationToken } from "@/lib/security/tokens";
+import type { Locale } from "@/i18n/routing";
 import type { ManualAppointmentInput } from "@/lib/validation/manualAppointmentSchema";
 import { logAuditEvent } from "@/server/audit/logAuditEvent";
 import type { AdminSession } from "@/server/auth/getAdminSession";
@@ -10,8 +12,25 @@ import { BookingNotConfiguredError, SlotUnavailableError } from "./errors";
 import { getBookingContext } from "./getBookingContext";
 import { isNoOverlapViolation } from "./overlap";
 
+/** Data needed to email the patient a confirmation for a manual entry. */
+export type ManualAppointmentNotification = {
+  to: string;
+  locale: Locale;
+  doctorName: string;
+  clinicName: string;
+  startsAt: Date;
+  timeZone: string;
+  /** Raw cancellation token for the confirmation email link only. */
+  cancellationToken: string;
+};
+
 export type CreateManualAppointmentResult = {
   id: string;
+  /**
+   * Present only when the patient should be emailed (notifyPatient set and an
+   * email on file); null otherwise so the caller skips sending.
+   */
+  notification: ManualAppointmentNotification | null;
 };
 
 /**
@@ -22,7 +41,10 @@ export type CreateManualAppointmentResult = {
  * `appointment_no_overlap` exclusion constraint as the final authority. Unlike
  * public booking it is not restricted to computed availability slots, so the
  * doctor can book any free time. The action is clinic-scoped and audited; no
- * consent record or cancellation email is created for manual entries.
+ * consent record is created for manual entries. A cancellation token is
+ * generated only when the patient will be emailed a confirmation
+ * (`notifyPatient` set and an email on file), so they can self-cancel like a
+ * public booking; only the token hash is stored.
  */
 export async function createManualAppointment(
   session: AdminSession,
@@ -76,13 +98,17 @@ export async function createManualAppointment(
     throw new SlotUnavailableError();
   }
 
+  const email = input.email?.trim() ?? "";
+  const shouldNotify = input.notifyPatient === true && email.length > 0;
+  const tokens = shouldNotify ? generateCancellationToken() : null;
+
   try {
     const appointmentId = await prisma.$transaction(async (tx) => {
       const patient = await findOrCreatePatient(tx, context.clinicId, {
         firstName: input.firstName,
         lastName: input.lastName,
         phone: input.phone,
-        email: input.email ?? "",
+        email,
       });
 
       const appointment = await tx.appointment.create({
@@ -95,6 +121,7 @@ export async function createManualAppointment(
           status: "booked",
           source: "manual_admin",
           patientMessage: input.message ?? null,
+          cancelTokenHash: tokens?.tokenHash ?? null,
         },
         select: { id: true },
       });
@@ -115,7 +142,21 @@ export async function createManualAppointment(
       return appointment.id;
     });
 
-    return { id: appointmentId };
+    return {
+      id: appointmentId,
+      notification:
+        shouldNotify && tokens
+          ? {
+              to: email,
+              locale: input.locale,
+              doctorName: context.doctorName,
+              clinicName: context.clinicName,
+              startsAt,
+              timeZone: context.timeZone,
+              cancellationToken: tokens.token,
+            }
+          : null,
+    };
   } catch (error) {
     if (isNoOverlapViolation(error)) {
       throw new SlotUnavailableError();

@@ -7,6 +7,7 @@ export type AuditAction =
   | "appointment.created_manual"
   | "appointment.cancelled_by_patient"
   | "appointment.cancelled_by_doctor"
+  | "appointment.rescheduled"
   | "appointment.completed"
   | "appointment.no_show"
   | "note.created"

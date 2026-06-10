@@ -5,6 +5,7 @@ import {
   formatInTimeZone,
   isoDayOfWeek,
   shiftIsoDate,
+  zonedDateTimeParts,
   zonedWallTimeToUtc,
 } from "@/lib/date-time/timezone";
 
@@ -92,5 +93,37 @@ describe("formatInTimeZone", () => {
       { hour: "2-digit", minute: "2-digit", hour12: false },
     );
     expect(out).toBe("09:00");
+  });
+});
+
+describe("zonedDateTimeParts", () => {
+  it("extracts wall-clock date and time in summer (CEST, UTC+2)", () => {
+    const parts = zonedDateTimeParts(
+      "Europe/Warsaw",
+      new Date("2026-06-10T07:00:00Z"),
+    );
+    expect(parts).toEqual({ date: "2026-06-10", time: "09:00" });
+  });
+
+  it("extracts wall-clock date and time in winter (CET, UTC+1)", () => {
+    const parts = zonedDateTimeParts(
+      "Europe/Warsaw",
+      new Date("2026-01-10T08:30:00Z"),
+    );
+    expect(parts).toEqual({ date: "2026-01-10", time: "09:30" });
+  });
+
+  it("round-trips with zonedWallTimeToUtc", () => {
+    const instant = zonedWallTimeToUtc("Europe/Warsaw", {
+      year: 2026,
+      month: 6,
+      day: 12,
+      hour: 14,
+      minute: 45,
+    });
+    expect(zonedDateTimeParts("Europe/Warsaw", instant)).toEqual({
+      date: "2026-06-12",
+      time: "14:45",
+    });
   });
 });

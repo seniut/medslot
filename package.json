@@ -19,6 +19,7 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
+    "db:cleanup-test": "tsx scripts/cleanup-test-data.ts",
     "retention:sweep": "tsx scripts/retention-sweep.ts",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",

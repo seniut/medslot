@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,9 @@ export function ManualAppointmentForm({
     ManualAppointmentFormState,
     FormData
   >(createManualAppointmentAction, initialManualAppointmentFormState);
+  const [email, setEmail] = useState("");
+  const [notifyChecked, setNotifyChecked] = useState(true);
+  const hasEmail = email.trim().length > 0;
 
   const fieldError = (field: string) => {
     const code = state.fieldErrors[field as keyof typeof state.fieldErrors];
@@ -85,6 +88,8 @@ export function ManualAppointmentForm({
             name="email"
             type="email"
             autoComplete="off"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
             className="border-input w-full rounded-md border px-3 py-2 text-sm"
           />
         </Field>
@@ -106,6 +111,21 @@ export function ManualAppointmentForm({
             {fieldError("message")}
           </p>
         ) : null}
+      </div>
+
+      <div className="space-y-1">
+        <label className="flex items-center gap-2 text-sm font-medium">
+          <input
+            type="checkbox"
+            name="notify"
+            className="size-4"
+            checked={notifyChecked && hasEmail}
+            disabled={!hasEmail}
+            onChange={(event) => setNotifyChecked(event.target.checked)}
+          />
+          {t("notifyLabel")}
+        </label>
+        <p className="text-muted-foreground text-xs">{t("notifyHint")}</p>
       </div>
 
       {state.formError ? (

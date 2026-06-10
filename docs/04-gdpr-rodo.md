@@ -102,6 +102,7 @@ The public booking flow implements this section as specified:
 - The cancellation token is emailed once; only its SHA-256 hash is stored on the appointment.
 - Public availability and confirmation pages select no patient fields, so no patient data is exposed on public routes.
 - The patient form collects only first name, last name, phone, email, and an optional message shown with a warning against sensitive medical detail — matching the data-minimization list below.
+- On a successful public booking the doctor/clinic (the data controller) receives an internal notification email containing the patient's name, phone, email, and optional message so staff can act on the booking. The recipient is `DOCTOR_NOTIFICATION_EMAIL` (or the doctor's own email when unset) — never another patient — and the email adapter logs no recipients or contents.
 
 ### Implementation status (Milestone 3)
 
@@ -121,6 +122,7 @@ The admin area implements the access-control and audit expectations for staff:
 - All sensitive admin actions are audited with the acting admin user id and no PII in metadata: `appointment.created_manual`, `appointment.completed`, `appointment.no_show`, and `appointment.cancelled_by_doctor`.
 - Manual appointment creation reuses the same database-level overlap protection as public booking, so admin entry cannot create double bookings.
 - The manual-appointment form keeps the same data-minimization fields and renders the internal-note warning against storing full medical documentation.
+- A manual entry emails the patient a confirmation only when the admin opts in (the "email the patient" checkbox, available only when an email is on file). When enabled, a one-time cancellation token is generated so the patient can self-cancel; only its SHA-256 hash is stored, never the raw token. No marketing consent is involved — this is a transactional appointment confirmation.
 
 ### Implementation status (Milestone 7)
 
@@ -271,6 +273,7 @@ Log these actions:
 - manual appointment created;
 - appointment cancelled by patient;
 - appointment cancelled by doctor;
+- appointment rescheduled;
 - appointment completed;
 - no-show marked;
 - note created/updated/deleted;

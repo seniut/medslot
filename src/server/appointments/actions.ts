@@ -9,6 +9,10 @@ import {
   type BookingFormState,
 } from "@/lib/validation/bookingSchema";
 import { sendBookingConfirmation } from "@/server/email/sendBookingConfirmation";
+import {
+  resolveDoctorNotificationRecipient,
+  sendDoctorNewBookingEmail,
+} from "@/server/email/sendDoctorNewBookingEmail";
 
 import { createAppointment } from "./createAppointment";
 import { BookingNotConfiguredError, SlotUnavailableError } from "./errors";
@@ -86,6 +90,27 @@ export async function createBookingAction(
     timeZone: result.timeZone,
     cancelUrl,
   });
+
+  // Notify the doctor/clinic of the new booking on the clinic's own locale
+  // (not the patient's). Best-effort and only when a recipient is configured.
+  const doctorRecipient = resolveDoctorNotificationRecipient(
+    result.doctorEmail,
+  );
+  if (doctorRecipient) {
+    const notifyLocale = result.defaultLocale === "en" ? "en" : "pl";
+    await sendDoctorNewBookingEmail({
+      to: doctorRecipient,
+      locale: notifyLocale,
+      clinicName: result.clinicName,
+      patientName: `${parsed.data.firstName} ${parsed.data.lastName}`,
+      patientPhone: parsed.data.phone,
+      patientEmail: parsed.data.email,
+      patientMessage: parsed.data.message ?? null,
+      startsAt: result.startsAt,
+      timeZone: result.timeZone,
+      adminUrl: `${appUrl}/${notifyLocale}/admin/appointments/${result.id}`,
+    });
+  }
 
   // `redirect` throws (its return type is `never`); returning it makes the
   // control flow explicit and satisfies the function's return type.

@@ -181,7 +181,8 @@ Manual appointment form:
 - last name;
 - phone;
 - email optional but recommended;
-- optional note.
+- optional note;
+- optional "email the patient a confirmation" toggle (available only when an email is provided; sends the confirmation and a self-cancellation link).
 
 Manual appointments must use the same double-booking protection as public bookings.
 

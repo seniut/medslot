@@ -6,6 +6,10 @@ export type BookingContext = {
   clinicName: string;
   doctorId: string;
   doctorName: string;
+  /** Doctor's own email — used as the default new-booking notification target. */
+  doctorEmail: string;
+  /** Clinic default locale — used for clinic/doctor-facing notifications. */
+  defaultLocale: string;
   timeZone: string;
 };
 
@@ -28,6 +32,8 @@ export async function getBookingContext(): Promise<BookingContext | null> {
     clinicName: clinic.name,
     doctorId: clinic.doctor.id,
     doctorName: clinic.doctor.displayName,
+    doctorEmail: clinic.doctor.email,
+    defaultLocale: clinic.defaultLocale,
     timeZone:
       clinic.doctor.timezone ||
       clinic.timezone ||

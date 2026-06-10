@@ -3,6 +3,7 @@ import { expect, it } from "vitest";
 import { describeDb } from "./db";
 
 import { prisma } from "@/db/prisma";
+import { sha256Hex } from "@/lib/security/hashing";
 import type { ManualAppointmentInput } from "@/lib/validation/manualAppointmentSchema";
 import { createManualAppointment } from "@/server/appointments/createManualAppointment";
 import {
@@ -114,5 +115,69 @@ describeDb("createManualAppointment (admin)", () => {
     await expect(
       createManualAppointment(session, manualInput()),
     ).rejects.toBeInstanceOf(BookingNotConfiguredError);
+  });
+
+  it("does not notify or store a token by default", async () => {
+    const { clinic, doctor } = await createClinicWithDoctor();
+    const session = makeAdminSession({
+      adminUserId: "admin-1",
+      clinicId: clinic.id,
+      doctorId: doctor.id,
+    });
+
+    const result = await createManualAppointment(session, manualInput());
+
+    expect(result.notification).toBeNull();
+    const appointment = await prisma.appointment.findUniqueOrThrow({
+      where: { id: result.id },
+    });
+    expect(appointment.cancelTokenHash).toBeNull();
+  });
+
+  it("notifies the patient and stores a token hash when requested with an email", async () => {
+    const { clinic, doctor } = await createClinicWithDoctor();
+    const session = makeAdminSession({
+      adminUserId: "admin-1",
+      clinicId: clinic.id,
+      doctorId: doctor.id,
+    });
+
+    const result = await createManualAppointment(
+      session,
+      manualInput({ notifyPatient: true }),
+    );
+
+    expect(result.notification).not.toBeNull();
+    expect(result.notification?.to).toBe("anna.nowak@example.com");
+    expect(result.notification?.doctorName).toBe(doctor.displayName);
+    expect(result.notification?.clinicName).toBe(clinic.name);
+
+    const token = result.notification?.cancellationToken ?? "";
+    expect(token.length).toBeGreaterThan(0);
+
+    const appointment = await prisma.appointment.findUniqueOrThrow({
+      where: { id: result.id },
+    });
+    expect(appointment.cancelTokenHash).toBe(sha256Hex(token));
+  });
+
+  it("does not notify when asked but no email is provided", async () => {
+    const { clinic, doctor } = await createClinicWithDoctor();
+    const session = makeAdminSession({
+      adminUserId: "admin-1",
+      clinicId: clinic.id,
+      doctorId: doctor.id,
+    });
+
+    const result = await createManualAppointment(
+      session,
+      manualInput({ notifyPatient: true, email: undefined }),
+    );
+
+    expect(result.notification).toBeNull();
+    const appointment = await prisma.appointment.findUniqueOrThrow({
+      where: { id: result.id },
+    });
+    expect(appointment.cancelTokenHash).toBeNull();
   });
 });
